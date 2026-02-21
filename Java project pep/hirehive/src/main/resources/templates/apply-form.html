@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Apply for Job - HireHive</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background: #1e1e1e;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+
+        .navbar {
+            background: #111;
+            padding: 15px 25px;
+            font-weight: bold;
+            color: #f5b942;
+            font-size: 22px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 40px auto;
+            background: #2b2b2b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #f5b942;
+            font-size: 26px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 8px;
+            border: none;
+            font-size: 15px;
+            background: #3b3b3b;
+            color: white;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .btn {
+            margin-top: 20px;
+            background: #f5b942;
+            color: black;
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background: #e0a72f;
+        }
+
+        .back-btn {
+            display: block;
+            margin-top: 12px;
+            text-align: center;
+            color: #f5b942;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">HireHive</div>
+
+<div class="container">
+
+<div class="container">
+
+    <h2>Select Job to Apply</h2>
+
+    <label>Select Job:</label>
+    <select name="jobId" form="applyForm" required>
+        <option value="">-- Select Job --</option>
+        <option th:each="job : ${jobs}"
+                th:value="${job.id}"
+                th:text="${job.title}">
+        </option>
+    </select>
+
+    <form id="applyForm" action="/submit-application" method="post" enctype="multipart/form-data">
+
+        <label>Your Name:</label>
+        <input type="text" name="applicantName" th:value="${user.name}" required>
+
+        <label>Your Email:</label>
+        <input type="email" name="email" th:value="${user.email}" required>
+
+        <label>Phone Number:</label>
+        <input type="text" name="phone" placeholder="Enter phone number" required>
+
+        <label>Upload Resume (PDF):</label>
+        <input type="file" name="resume" accept="application/pdf" required>
+
+        <label>Cover Letter:</label>
+        <textarea name="coverLetter" rows="5"></textarea>
+
+        <button type="submit" class="btn">Submit Application</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>

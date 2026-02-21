@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>HireHive - Jobs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e1e1e, #2c2c2c);
+            color: white;
+        }
+
+        .navbar {
+            background: #1a1a1a;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .navbar a {
+            color: #f5b942;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        .container {
+            padding: 40px;
+        }
+
+        .job-card {
+            background: #2b2b2b;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background: #f5b942;
+            color: black;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #e0a72f;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div><strong>HireHive</strong></div>
+    <div>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/jobs">Jobs</a>
+        <a href="/post-job" sec:authorize="hasRole('EMPLOYER')">Post Job</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h2>Available Jobs</h2>
+
+    <div th:each="job : ${jobs}" class="job-card">
+
+        <h3 th:text="${job.title}"></h3>
+
+        <p><strong>Company:</strong>
+            <span th:text="${job.company}"></span>
+        </p>
+
+        <p><strong>Location:</strong>
+            <span th:text="${job.location}"></span>
+        </p>
+
+        <p th:text="${job.description}"></p>
+    
+        <form action="/apply" method="get">
+            <button type="submit" class="btn">Apply Now</button>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>
