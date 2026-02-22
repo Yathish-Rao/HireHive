@@ -11,6 +11,7 @@ import com.project.hirehive.service.CustomUserDetailsService;
 
 @Configuration
 public class SecurityConfig {
+
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
@@ -22,31 +23,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-    http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()
-            .requestMatchers("/apply").authenticated()
-            .requestMatchers("/uploads/**").permitAll()
-            .anyRequest().authenticated()
-        )
-        .formLogin(login -> login
-            .loginPage("/login")
-            .defaultSuccessUrl("/dashboard", true)
-            .permitAll()
-        )
-        .logout(logout -> logout
-            .logoutUrl("/logout")
-            .logoutSuccessUrl("/login?logout=true")
-            .invalidateHttpSession(true)
-            .clearAuthentication(true)
-            .deleteCookies("JSESSIONID")
-            .permitAll()
-        );
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/register", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/apply/**").authenticated()
+                .requestMatchers("/uploads/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(login -> login
+                .loginPage("/login")
+                .defaultSuccessUrl("/dashboard", true)
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            );
 
-    return http.build();
+        return http.build();
+    }
 }
-
-
-}
-

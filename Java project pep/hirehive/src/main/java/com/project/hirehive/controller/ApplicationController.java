@@ -31,51 +31,59 @@ public class ApplicationController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/apply")
-    public String openApplyForm(Model model, Principal principal) {
+    @GetMapping("/apply/{jobId}")
+    public String openApplyForm(@PathVariable Long jobId, Model model, Principal principal) {
 
-    System.out.println("apply opened");
+    Job job = jobService.getJobById(jobId);
 
-    // Load all jobs
-    model.addAttribute("jobs", jobService.getAllJobs());
-
-    // Load user only if logged in
-    User user = null;
-    if (principal != null) {
-        user = userService.findByEmail(principal.getName());
+    if (job == null) {
+        return "redirect:/jobs?notFound=true";
     }
-    model.addAttribute("user", user);
+
+    model.addAttribute("job", job);
+
+    if (principal != null) {
+        model.addAttribute("user", userService.findByEmail(principal.getName()));
+    }
 
     return "apply-form";
 }
 
     @PostMapping("/submit-application")
-    public String submitApplication(@RequestParam("jobId") Long jobId,
-                                    @RequestParam("resume") MultipartFile resume,
-                                    @RequestParam("applicantName") String name,
-                                    @RequestParam("email") String email,
-                                    @RequestParam("phone") String phone,
-                                    @RequestParam("coverLetter") String coverLetter) {
-
+    public String submitApplication(
+            @RequestParam("jobId") Long jobId,
+            @RequestParam("resume") MultipartFile resume,
+            @RequestParam("applicantName") String name,
+            @RequestParam("email") String email,
+            @RequestParam("phone") String phone,
+            @RequestParam("coverLetter") String coverLetter
+    ) {
         try {
+            // Upload Folder
             String uploadDir = "uploads/";
             File folder = new File(uploadDir);
             if (!folder.exists()) folder.mkdirs();
 
+            // File name
             String fileName = System.currentTimeMillis() + "_" + resume.getOriginalFilename();
-            Path path = Paths.get(uploadDir + fileName);
-            Files.write(path, resume.getBytes());
+            Path filePath = Paths.get(uploadDir + fileName);
+            Files.write(filePath, resume.getBytes());
 
+            // Get job
             Job job = jobService.getJobById(jobId);
 
+            // Save Application
             Application app = new Application();
             app.setApplicantName(name);
-            app.setResumeLink(path.toString());
+            app.setEmail(email);
+            app.setPhone(phone);
+            app.setCoverLetter(coverLetter);
+            app.setResumeLink(filePath.toString());
             app.setJob(job);
 
             applicationRepository.save(app);
 
-            return "redirect:/jobs?applied=true";
+            return "redirect:/jobs?success=true";
 
         } catch (Exception e) {
             e.printStackTrace();

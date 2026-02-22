@@ -84,10 +84,9 @@
         </p>
 
         <p th:text="${job.description}"></p>
-    
-        <form action="/apply" method="get">
-            <button type="submit" class="btn">Apply Now</button>
-        </form>
+       <!-- <form action="/apply" method="post"> <button type="submit" class="btn">Apply Now</button> </form> -!>
+        <!- ✅ Correct Apply Button -->
+        <a th:href="@{/apply/{id}(id=${job.id})}" class="btn">Apply Now</a>
 
     </div>
 </div>
