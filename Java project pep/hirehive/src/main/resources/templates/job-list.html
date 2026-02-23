@@ -73,22 +73,30 @@
 
     <div th:each="job : ${jobs}" class="job-card">
 
-        <h3 th:text="${job.title}"></h3>
+    <h3 th:text="${job.title}"></h3>
 
-        <p><strong>Company:</strong>
-            <span th:text="${job.company}"></span>
-        </p>
+    <p><strong>Company:</strong>
+        <span th:text="${job.company}"></span>
+    </p>
 
-        <p><strong>Location:</strong>
-            <span th:text="${job.location}"></span>
-        </p>
+    <p><strong>Location:</strong>
+        <span th:text="${job.location}"></span>
+    </p>
 
-        <p th:text="${job.description}"></p>
-       <!-- <form action="/apply" method="post"> <button type="submit" class="btn">Apply Now</button> </form> -!>
-        <!- ✅ Correct Apply Button -->
-        <a th:href="@{/apply/{id}(id=${job.id})}" class="btn">Apply Now</a>
+    <p th:text="${job.description}"></p>
 
-    </div>
+    <!-- Apply Button (for Job Seekers) -->
+    <a th:href="@{/apply/{id}(id=${job.id})}" class="btn">Apply Now</a>
+
+    <!-- View Applications Button (only for EMPLOYERS) -->
+    <a th:href="@{'/applications/' + ${job.id}}"
+       class="btn"
+       style="background:#4CAF50; margin-left:10px;"
+       sec:authorize="hasRole('EMPLOYER')">
+        View Applications
+    </a>
+
+</div>
 </div>
 
 </body>

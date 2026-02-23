@@ -31,24 +31,26 @@ public class ApplicationController {
     @Autowired
     private UserService userService;
 
+    // -------------------- APPLY FORM --------------------
     @GetMapping("/apply/{jobId}")
     public String openApplyForm(@PathVariable Long jobId, Model model, Principal principal) {
 
-    Job job = jobService.getJobById(jobId);
+        Job job = jobService.getJobById(jobId);
 
-    if (job == null) {
-        return "redirect:/jobs?notFound=true";
+        if (job == null) {
+            return "redirect:/jobs?notFound=true";
+        }
+
+        model.addAttribute("job", job);
+
+        if (principal != null) {
+            model.addAttribute("user", userService.findByEmail(principal.getName()));
+        }
+
+        return "apply-form";
     }
 
-    model.addAttribute("job", job);
-
-    if (principal != null) {
-        model.addAttribute("user", userService.findByEmail(principal.getName()));
-    }
-
-    return "apply-form";
-}
-
+    // -------------------- SUBMIT APPLICATION --------------------
     @PostMapping("/submit-application")
     public String submitApplication(
             @RequestParam("jobId") Long jobId,
@@ -89,5 +91,17 @@ public class ApplicationController {
             e.printStackTrace();
             return "redirect:/jobs?error=true";
         }
+    }
+
+    // -------------------- VIEW APPLICATIONS (NEWLY ADDED) --------------------
+    @GetMapping("/applications/{jobId}")
+    public String viewApplications(@PathVariable Long jobId, Model model) {
+
+        Job job = jobService.getJobById(jobId);
+
+        model.addAttribute("job", job);
+        model.addAttribute("applications", applicationRepository.findByJobId(jobId));
+
+        return "applications-list";  // MUST MATCH templates/applications-list.html
     }
 }
